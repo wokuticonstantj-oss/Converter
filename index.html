@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial->
+    <title>Thermo-Tech Pro</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7>
+        .card { background: white; padding: 2rem; border-radius>
+        h2 { color: #333; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; margin-bottom: 20px>
+        .btn-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; border: none; border-r>
+        .to-f { background-color: #007bff; }
+        .to-c { background-color: #ff9800; }
+        button:active { transform: scale(0.95); }
+        #result { margin-top: 25px; font-size: 1.5rem; font-wei>
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Thermo-Tech Pro</h2>
+    <input type="number" id="tempInput" placeholder="Enter degr>
+
+    <div class="btn-group">
+        <button class="to-f" onclick="convert('F')">To °F</butt>
+        <button class="to-c" onclick="convert('C')">To °C</butt>
+    </div>
+
+    <div id="result">---</div>
+</div>
+
+<script>
+    function convert(unit) {
+        const input = document.getElementById('tempInput').valu>
+        const display = document.getElementById('result');
+
+        if (input === "") {
+            display.innerText = "Enter a value!";
+            return;
+        }
+
+        if (unit === 'F') {
+            // Celsius to Fahrenheit: (C * 9/5) + 32
+            let res = (input * 9/5) + 32;
+            display.innerText = res.toFixed(2) + " °F";
+        } else {
+            // Fahrenheit to Celsius: (F - 32) * 5/9
+            let res = (input - 32) * 5/9;
+            display.innerText = res.toFixed(2) + " °C";
+        }
+    }
+</script>
+
+</body>
+</html>
