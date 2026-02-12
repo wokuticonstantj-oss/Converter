@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulanga SS Edu-Hub</title>
+    <title>Bulanga SS Pro - Management System</title>
     <style>
-        :root { --primary: #003366; --accent: #e67e22; --bg: #f4f7f6; --text: #333; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); }
+        :root { --school-blue: #003366; --school-orange: #f39c12; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
         
-        /* Header & School Name */
-        header { background: var(--primary); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
-        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; }
+        /* Navigation & Header - Hidden during Printing */
+        @media print {
+            .nav, header, .main-btn, .action-area, .info-entry { display: none !important; }
+            .content { padding: 0; margin: 0; width: 100%; }
+            .card { box-shadow: none; border: none; width: 100%; }
+            #reportDisplay { display: block !important; }
+        }
 
-        /* Navigation */
-        .nav { display: flex; overflow-x: auto; background: white; padding: 10px; gap: 10px; sticky: top; }
-        .nav button { white-space: nowrap; padding: 10px 20px; border: none; border-radius: 20px; background: #eee; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .nav button.active { background: var(--accent); color: white; }
+        header { background: var(--school-blue); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--school-orange); }
+        header h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; }
+        header p { margin: 5px 0 0; font-style: italic; font-size: 0.9rem; letter-spacing: 2px; }
 
-        /* Container & Cards */
-        .content { padding: 20px; max-width: 600px; margin: auto; }
-        .section { display: none; animation: slideIn 0.4s ease-out; }
-        .section.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .nav { display: flex; background: white; sticky: top; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .nav button { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .nav button.active { color: var(--school-orange); border-bottom: 3px solid var(--school-orange); }
 
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { border-left: 5px solid var(--accent); padding-left: 10px; font-size: 1.2rem; }
+        .content { padding: 20px; max-width: 800px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        
+        /* Grid Layouts */
+        .info-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px; }
+        
+        .main-btn { width: 100%; background: var(--school-blue); color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .print-btn { background: #27ae60; margin-top: 10px; }
 
-        /* Forms & Inputs */
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        .action-btn { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        /* Library Grid */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .book { background: #f9f9f9; border: 1px solid #eee; padding: 20px 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .book:active { transform: scale(0.95); background: #eee; }
-
-        /* Result Output */
-        #resOutput { margin-top: 20px; text-align: center; font-size: 1.1rem; }
-        .download-btn { background: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px; width: 100%; border: none;}
+        /* Report Table */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: left; }
+        th { background: #f2f2f2; }
+        .summary { margin-top: 15px; padding: 15px; background: #eef7ff; border: 1px dashed var(--school-blue); border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body>
@@ -49,91 +50,88 @@
 </header>
 
 <div class="nav">
-    <button onclick="show('lib')" id="btn-lib" class="active">📚 Library</button>
-    <button onclick="show('ana')" id="btn-ana">📊 Analyzer</button>
-    <button onclick="show('imp')" id="btn-imp">📥 Import Paper</button>
+    <button onclick="show('ana')" id="btn-ana" class="active">📊 Analyze</button>
+    <button onclick="show('lib')" id="btn-lib">📚 Library</button>
+    <button onclick="show('imp')" id="btn-imp">📥 Import</button>
 </div>
 
 <div class="content">
-    <div id="lib" class="section active">
-        <div class="card">
-            <h2>Digital Library</h2>
-            <div class="grid">
-                <div class="book" onclick="alert('Opening Physics...')">📓 Physics</div>
-                <div class="book" onclick="alert('Opening Math...')">📐 Mathematics</div>
-                <div class="book" onclick="alert('Opening Biology...')">🔬 Biology</div>
-                <div class="book" onclick="alert('Opening English...')">📖 English</div>
-            </div>
-        </div>
-    </div>
-
     <div id="ana" class="section">
-        <div class="card">
-            <h2>Results Analyzer</h2>
-            <input type="number" id="m1" placeholder="Math Score">
-            <input type="number" id="m2" placeholder="English Score">
-            <input type="number" id="m3" placeholder="Science Score">
-            <button class="action-btn" onclick="analyze()">Calculate & Grade</button>
-            <div id="resOutput"></div>
+        <div class="card info-entry">
+            <h2>Teacher's Dashboard</h2>
+            <div class="info-group">
+                <input type="text" id="sName" placeholder="Student Name">
+                <input type="text" id="sClass" placeholder="Class (e.g. S.4)">
+            </div>
+            <div class="subject-grid">
+                <input type="number" id="sub1" placeholder="Math">
+                <input type="number" id="sub2" placeholder="English">
+                <input type="number" id="sub3" placeholder="Biology">
+                <input type="number" id="sub4" placeholder="Physics">
+                <input type="number" id="sub5" placeholder="Chemistry">
+                <input type="number" id="sub6" placeholder="History">
+                <input type="number" id="sub7" placeholder="Geography">
+                <input type="number" id="sub8" placeholder="Commerce">
+            </div>
+            <button class="main-btn" onclick="generateReport()">Process Marks</button>
         </div>
-    </div>
 
-    <div id="imp" class="section">
-        <div class="card">
-            <h2>Past Paper Importer</h2>
-            <input type="text" id="paperTitle" placeholder="Paper Name (e.g. S.4 Math 2025)">
-            <input type="file" id="paperFile" accept="image/*,application/pdf">
-            <button class="action-btn" style="background:#27ae60" onclick="importPaper()">Add to Library</button>
-            <div id="paperList" style="margin-top:15px;"></div>
+        <div id="reportDisplay" class="card" style="display:none;">
+            <div style="text-align:center;">
+                <h2 style="margin:0; color:var(--school-blue);">BULANGA SECONDARY SCHOOL</h2>
+                <p style="margin:5px 0;">Official Student Performance Report</p>
+                <hr>
+            </div>
+            <div id="reportHeader"></div>
+            <table>
+                <thead><tr><th>Subject</th><th>Score</th><th>Grade</th></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div id="summaryBox" class="summary"></div>
+            
+            <div class="action-area">
+                <button class="main-btn print-btn" onclick="window.print()">🖨️ Print Report Card</button>
+                <button class="main-btn" style="background:#8e44ad;" onclick="location.reload()">🔄 New Entry</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + id).classList.add('active');
+        // Simple tab switcher logic
     }
 
-    function analyze() {
-        const scores = [Number(document.getElementById('m1').value), Number(document.getElementById('m2').value), Number(document.getElementById('m3').value)];
-        const avg = (scores[0] + scores[1] + scores[2]) / 3;
-        let grade = avg >= 80 ? "D1 (Distinction)" : avg >= 60 ? "C3 (Credit)" : "F9 (Fail)";
-        let color = avg >= 60 ? "#27ae60" : "#e74c3c";
-
-        document.getElementById('resOutput').innerHTML = `
-            <div style="border:2px solid ${color}; padding:15px; border-radius:10px;">
-                <strong>Average: ${avg.toFixed(1)}%</strong><br>
-                Status: <span style="color:${color}">${grade}</span><br>
-                <button class="download-btn" onclick="downloadReport(${avg.toFixed(1)}, '${grade}')">💾 Save Report Card</button>
-            </div>`;
+    function getGrade(s) {
+        if(s >= 80) return "D1"; if(s >= 75) return "D2"; if(s >= 65) return "C3";
+        if(s >= 60) return "C4"; if(s >= 55) return "C5"; if(s >= 50) return "C6";
+        if(s >= 45) return "P7"; if(s >= 40) return "P8"; return "F9";
     }
 
-    function downloadReport(avg, grade) {
-        const text = `BULANGA SS PROGRESSIVE\nSTUDENT REPORT CARD\n--------------------\nAvg: ${avg}%\nGrade: ${grade}\n--------------------\nGenerated Offline`;
-        const blob = new Blob([text], {type: "text/plain"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "Bulanga_Report.txt";
-        a.click();
-    }
+    function generateReport() {
+        const name = document.getElementById('sName').value;
+        const cls = document.getElementById('sClass').value;
+        if(!name || !cls) return alert("Enter Student Info!");
 
-    function importPaper() {
-        const title = document.getElementById('paperTitle').value;
-        const file = document.getElementById('paperFile').files[0];
-        if(!title || !file) return alert("Fill all fields");
+        const subs = ["Math", "English", "Biology", "Physics", "Chemistry", "History", "Geography", "Commerce"];
+        let total = 0;
+        let rows = "";
 
-        const url = URL.createObjectURL(file);
-        const div = document.createElement('div');
-        div.style = "background:#eee; padding:10px; border-radius:5px; margin-bottom:5px; display:flex; justify-content:space-between;";
-        div.innerHTML = `<span>${title}</span> <a href="${url}" target="_blank">View 👁️</a>`;
-        document.getElementById('paperList').appendChild(div);
+        for(let i=1; i<=8; i++) {
+            let s = Number(document.getElementById('sub' + i).value) || 0;
+            total += s;
+            rows += `<tr><td>${subs[i-1]}</td><td>${s}</td><td>${getGrade(s)}</td></tr>`;
+        }
+
+        const avg = total / 8;
+        let div = avg >= 70 ? "Division 1" : avg >= 55 ? "Division 2" : avg >= 40 ? "Division 3" : "Division 4";
+
+        document.getElementById('reportHeader').innerHTML = `<p><strong>Name:</strong> ${name.toUpperCase()} | <strong>Class:</strong> ${cls}</p>`;
+        document.getElementById('tableBody').innerHTML = rows;
+        document.getElementById('summaryBox').innerHTML = `<strong>AVERAGE: ${avg.toFixed(1)}% | RESULT: ${div}</strong>`;
+        document.getElementById('reportDisplay').style.display = 'block';
     }
 </script>
-
 </body>
-</html>
-
-
+    </html>
+    
