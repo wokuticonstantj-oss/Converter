@@ -3,103 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulanga SS Pro - Management System</title>
+    <title>Bulanga SS - Collaborative Hub</title>
     <style>
-        :root { --school-blue: #003366; --school-orange: #f39c12; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        :root { --primary: #003366; --accent: #f39c12; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
         
-        /* Navigation & Header - Hidden during Printing */
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--accent); }
+        .nav { display: flex; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); sticky: top; }
+        .nav button { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; cursor: pointer; }
+        .nav button.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+
+        .container { padding: 15px; max-width: 700px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        /* Collaborative Interface */
+        .teacher-select { background: #eef7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cce5ff; }
+        .subject-input { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .subject-input input { width: 80px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; }
+        .locked { background: #f9f9f9; color: #999; pointer-events: none; }
+
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-print { background: #27ae60; color: white; }
+
         @media print {
-            .nav, header, .main-btn, .action-area, .info-entry { display: none !important; }
-            .content { padding: 0; margin: 0; width: 100%; }
-            .card { box-shadow: none; border: none; width: 100%; }
-            #reportDisplay { display: block !important; }
+            .nav, header, .btn, .teacher-select, .no-print { display: none !important; }
+            .card { border: 1px solid black; }
         }
-
-        header { background: var(--school-blue); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--school-orange); }
-        header h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; }
-        header p { margin: 5px 0 0; font-style: italic; font-size: 0.9rem; letter-spacing: 2px; }
-
-        .nav { display: flex; background: white; sticky: top; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .nav button { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
-        .nav button.active { color: var(--school-orange); border-bottom: 3px solid var(--school-orange); }
-
-        .content { padding: 20px; max-width: 800px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        
-        /* Grid Layouts */
-        .info-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px; }
-        
-        .main-btn { width: 100%; background: var(--school-blue); color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
-        .print-btn { background: #27ae60; margin-top: 10px; }
-
-        /* Report Table */
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #000; padding: 10px; text-align: left; }
-        th { background: #f2f2f2; }
-        .summary { margin-top: 15px; padding: 15px; background: #eef7ff; border: 1px dashed var(--school-blue); border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>BULANGA SECONDARY SCHOOL</h1>
-    <p>" PROGRESSIVE "</p>
+    <p>" PROGRESSIVE COLLABORATION "</p>
 </header>
 
 <div class="nav">
-    <button onclick="show('ana')" id="btn-ana" class="active">📊 Analyze</button>
-    <button onclick="show('lib')" id="btn-lib">📚 Library</button>
-    <button onclick="show('imp')" id="btn-imp">📥 Import</button>
+    <button onclick="show('entry')" id="tab-entry" class="active">📝 Enter Marks</button>
+    <button onclick="show('view')" id="tab-view">📊 View Full Report</button>
 </div>
 
-<div class="content">
-    <div id="ana" class="section">
-        <div class="card info-entry">
-            <h2>Teacher's Dashboard</h2>
-            <div class="info-group">
-                <input type="text" id="sName" placeholder="Student Name">
-                <input type="text" id="sClass" placeholder="Class (e.g. S.4)">
-            </div>
-            <div class="subject-grid">
-                <input type="number" id="sub1" placeholder="Math">
-                <input type="number" id="sub2" placeholder="English">
-                <input type="number" id="sub3" placeholder="Biology">
-                <input type="number" id="sub4" placeholder="Physics">
-                <input type="number" id="sub5" placeholder="Chemistry">
-                <input type="number" id="sub6" placeholder="History">
-                <input type="number" id="sub7" placeholder="Geography">
-                <input type="number" id="sub8" placeholder="Commerce">
-            </div>
-            <button class="main-btn" onclick="generateReport()">Process Marks</button>
+<div class="container">
+    
+    <div id="entry" class="section">
+        <div class="card teacher-select">
+            <strong>TEACHER LOGIN</strong>
+            <p style="font-size: 0.8rem;">Select your subject to unlock entry:</p>
+            <select id="activeSubject" onchange="unlockSubject()" style="width:100%; padding:10px; border-radius:5px;">
+                <option value="">-- Choose Your Subject --</option>
+                <option value="math">Mathematics</option>
+                <option value="eng">English</option>
+                <option value="bio">Biology</option>
+                <option value="phy">Physics</option>
+                <option value="chem">Chemistry</option>
+            </select>
         </div>
 
-        <div id="reportDisplay" class="card" style="display:none;">
-            <div style="text-align:center;">
-                <h2 style="margin:0; color:var(--school-blue);">BULANGA SECONDARY SCHOOL</h2>
-                <p style="margin:5px 0;">Official Student Performance Report</p>
-                <hr>
-            </div>
-            <div id="reportHeader"></div>
-            <table>
-                <thead><tr><th>Subject</th><th>Score</th><th>Grade</th></tr></thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-            <div id="summaryBox" class="summary"></div>
+        <div class="card">
+            <input type="text" id="studentName" placeholder="Student Full Name" style="width:100%; padding:12px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
+            <input type="text" id="studentClass" placeholder="Class (e.g., S.4 West)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
             
-            <div class="action-area">
-                <button class="main-btn print-btn" onclick="window.print()">🖨️ Print Report Card</button>
-                <button class="main-btn" style="background:#8e44ad;" onclick="location.reload()">🔄 New Entry</button>
+            <div id="subjectList">
+                <div class="subject-input locked" id="row-math">Mathematics <input type="number" id="val-math" placeholder="0"></div>
+                <div class="subject-input locked" id="row-eng">English <input type="number" id="val-eng" placeholder="0"></div>
+                <div class="subject-input locked" id="row-bio">Biology <input type="number" id="val-bio" placeholder="0"></div>
+                <div class="subject-input locked" id="row-phy">Physics <input type="number" id="val-phy" placeholder="0"></div>
+                <div class="subject-input locked" id="row-chem">Chemistry <input type="number" id="val-chem" placeholder="0"></div>
             </div>
+
+            <button class="btn btn-save" onclick="syncData()">📤 Sync to School Cloud</button>
         </div>
     </div>
+
+    <div id="view" class="section" style="display:none;">
+        <div class="card" id="reportArea">
+            <h2 style="text-align:center; color:var(--primary);">OFFICIAL REPORT CARD</h2>
+            <div id="reportInfo"></div>
+            <table style="width:100%; border-collapse: collapse; margin-top:20px;">
+                <thead><tr style="background:#eee;"><th>Subject</th><th>Score</th><th>Grade</th></tr></thead>
+                <tbody id="reportTableBody"></tbody>
+            </table>
+            <div id="reportSummary" style="margin-top:20px; padding:15px; background:#eef7ff; text-align:center; font-weight:bold;"></div>
+            <button class="btn btn-print" onclick="window.print()">🖨️ Print for Parent</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
     function show(id) {
-        // Simple tab switcher logic
+        document.getElementById('entry').style.display = id === 'entry' ? 'block' : 'none';
+        document.getElementById('view').style.display = id === 'view' ? 'block' : 'none';
+        document.getElementById('tab-entry').className = id === 'entry' ? 'active' : '';
+        document.getElementById('tab-view').className = id === 'view' ? 'active' : '';
+    }
+
+    function unlockSubject() {
+        const selected = document.getElementById('activeSubject').value;
+        // Lock everything first
+        document.querySelectorAll('.subject-input').forEach(div => div.classList.add('locked'));
+        // Unlock only the teacher's subject
+        if(selected) {
+            document.getElementById('row-' + selected).classList.remove('locked');
+        }
     }
 
     function getGrade(s) {
@@ -108,30 +115,38 @@
         if(s >= 45) return "P7"; if(s >= 40) return "P8"; return "F9";
     }
 
+    function syncData() {
+        const name = document.getElementById('studentName').value;
+        if(!name) return alert("Enter Student Name first!");
+        
+        // This is where we will add the Google Sheets link.
+        // For now, it compiles the local report for viewing.
+        alert("Data compiled! Check 'View Full Report' tab.");
+        generateReport();
+    }
+
     function generateReport() {
-        const name = document.getElementById('sName').value;
-        const cls = document.getElementById('sClass').value;
-        if(!name || !cls) return alert("Enter Student Info!");
-
-        const subs = ["Math", "English", "Biology", "Physics", "Chemistry", "History", "Geography", "Commerce"];
-        let total = 0;
+        const name = document.getElementById('studentName').value;
+        const cls = document.getElementById('studentClass').value;
+        const subjects = ["math", "eng", "bio", "phy", "chem"];
+        const labels = ["Mathematics", "English", "Biology", "Physics", "Chemistry"];
+        
         let rows = "";
+        let total = 0;
 
-        for(let i=1; i<=8; i++) {
-            let s = Number(document.getElementById('sub' + i).value) || 0;
-            total += s;
-            rows += `<tr><td>${subs[i-1]}</td><td>${s}</td><td>${getGrade(s)}</td></tr>`;
-        }
+        subjects.forEach((s, index) => {
+            let score = Number(document.getElementById('val-' + s).value) || 0;
+            total += score;
+            rows += `<tr><td style="border:1px solid #ddd; padding:8px;">${labels[index]}</td><td style="border:1px solid #ddd; padding:8px;">${score}</td><td style="border:1px solid #ddd; padding:8px;">${getGrade(score)}</td></tr>`;
+        });
 
-        const avg = total / 8;
-        let div = avg >= 70 ? "Division 1" : avg >= 55 ? "Division 2" : avg >= 40 ? "Division 3" : "Division 4";
-
-        document.getElementById('reportHeader').innerHTML = `<p><strong>Name:</strong> ${name.toUpperCase()} | <strong>Class:</strong> ${cls}</p>`;
-        document.getElementById('tableBody').innerHTML = rows;
-        document.getElementById('summaryBox').innerHTML = `<strong>AVERAGE: ${avg.toFixed(1)}% | RESULT: ${div}</strong>`;
-        document.getElementById('reportDisplay').style.display = 'block';
+        const avg = total / 5;
+        document.getElementById('reportInfo').innerHTML = `<strong>Name:</strong> ${name.toUpperCase()}<br><strong>Class:</strong> ${cls}`;
+        document.getElementById('reportTableBody').innerHTML = rows;
+        document.getElementById('reportSummary').innerHTML = `Average: ${avg.toFixed(1)}% | Result: ${avg >= 50 ? 'PASS' : 'FAIL'}`;
     }
 </script>
+
 </body>
-    </html>
-    
+                                                                                                    </html>
+        
