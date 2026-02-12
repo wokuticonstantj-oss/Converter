@@ -1,152 +1,102 @@
+                                                                                                    </html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulanga SS - Collaborative Hub</title>
+    <title>Bulanga SS - Marks Entry</title>
     <style>
-        :root { --primary: #003366; --accent: #f39c12; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        
-        header { background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--accent); }
-        .nav { display: flex; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); sticky: top; }
-        .nav button { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; cursor: pointer; }
-        .nav button.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
-
-        .container { padding: 15px; max-width: 700px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        
-        /* Collaborative Interface */
-        .teacher-select { background: #eef7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cce5ff; }
-        .subject-input { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
-        .subject-input input { width: 80px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; }
-        .locked { background: #f9f9f9; color: #999; pointer-events: none; }
-
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-print { background: #27ae60; color: white; }
-
-        @media print {
-            .nav, header, .btn, .teacher-select, .no-print { display: none !important; }
-            .card { border: 1px solid black; }
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f7; padding: 15px; margin: 0; }
+        .card { max-width: 450px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: 20px auto; }
+        h2 { color: #1a73e8; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }
+        label { display: block; margin: 15px 0 5px; font-weight: 600; color: #444; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 5px; border: 1px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        button:active { background: #1152a8; transform: scale(0.98); }
+        .status { text-align: center; margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 5px; }
+        .loading { color: #1a73e8; background: #e8f0fe; }
+        .success { color: #1e7e34; background: #d4edda; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>BULANGA SECONDARY SCHOOL</h1>
-    <p>" PROGRESSIVE COLLABORATION "</p>
-</header>
-
-<div class="nav">
-    <button onclick="show('entry')" id="tab-entry" class="active">📝 Enter Marks</button>
-    <button onclick="show('view')" id="tab-view">📊 View Full Report</button>
-</div>
-
-<div class="container">
+<div class="card">
+    <h2>Bulanga SS Database</h2>
     
-    <div id="entry" class="section">
-        <div class="card teacher-select">
-            <strong>TEACHER LOGIN</strong>
-            <p style="font-size: 0.8rem;">Select your subject to unlock entry:</p>
-            <select id="activeSubject" onchange="unlockSubject()" style="width:100%; padding:10px; border-radius:5px;">
-                <option value="">-- Choose Your Subject --</option>
-                <option value="math">Mathematics</option>
-                <option value="eng">English</option>
-                <option value="bio">Biology</option>
-                <option value="phy">Physics</option>
-                <option value="chem">Chemistry</option>
-            </select>
-        </div>
+    <label>Student Full Name</label>
+    <input type="text" id="studentName" placeholder="e.g. Musoke Peter">
 
-        <div class="card">
-            <input type="text" id="studentName" placeholder="Student Full Name" style="width:100%; padding:12px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
-            <input type="text" id="studentClass" placeholder="Class (e.g., S.4 West)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
-            
-            <div id="subjectList">
-                <div class="subject-input locked" id="row-math">Mathematics <input type="number" id="val-math" placeholder="0"></div>
-                <div class="subject-input locked" id="row-eng">English <input type="number" id="val-eng" placeholder="0"></div>
-                <div class="subject-input locked" id="row-bio">Biology <input type="number" id="val-bio" placeholder="0"></div>
-                <div class="subject-input locked" id="row-phy">Physics <input type="number" id="val-phy" placeholder="0"></div>
-                <div class="subject-input locked" id="row-chem">Chemistry <input type="number" id="val-chem" placeholder="0"></div>
-            </div>
+    <label>Class</label>
+    <select id="studentClass">
+        <option>Senior 1</option>
+        <option>Senior 2</option>
+        <option>Senior 3</option>
+        <option>Senior 4</option>
+    </select>
 
-            <button class="btn btn-save" onclick="syncData()">📤 Sync to School Cloud</button>
-        </div>
-    </div>
+    <label>Subject</label>
+    <select id="teacherSubject">
+        <option value="math">Mathematics</option>
+        <option value="eng">English</option>
+        <option value="bio">Biology</option>
+        <option value="phy">Physics</option>
+        <option value="chem">Chemistry</option>
+        <option value="hist">History</option>
+        <option value="geo">Geography</option>
+        <option value="comm">Commerce</option>
+    </select>
 
-    <div id="view" class="section" style="display:none;">
-        <div class="card" id="reportArea">
-            <h2 style="text-align:center; color:var(--primary);">OFFICIAL REPORT CARD</h2>
-            <div id="reportInfo"></div>
-            <table style="width:100%; border-collapse: collapse; margin-top:20px;">
-                <thead><tr style="background:#eee;"><th>Subject</th><th>Score</th><th>Grade</th></tr></thead>
-                <tbody id="reportTableBody"></tbody>
-            </table>
-            <div id="reportSummary" style="margin-top:20px; padding:15px; background:#eef7ff; text-align:center; font-weight:bold;"></div>
-            <button class="btn btn-print" onclick="window.print()">🖨️ Print for Parent</button>
-        </div>
-    </div>
+    <label>Enter Mark (0-100)</label>
+    <input type="number" id="marks" placeholder="Enter Score">
 
+    <button onclick="syncData()">Save to Cloud</button>
+    <div id="statusMsg" class="status" style="display:none;"></div>
 </div>
 
 <script>
-    function show(id) {
-        document.getElementById('entry').style.display = id === 'entry' ? 'block' : 'none';
-        document.getElementById('view').style.display = id === 'view' ? 'block' : 'none';
-        document.getElementById('tab-entry').className = id === 'entry' ? 'active' : '';
-        document.getElementById('tab-view').className = id === 'view' ? 'active' : '';
-    }
+    // YOUR SECURE CLOUD BRIDGE
+    const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxAR6cxNwqxU7SkixGyZZ39glMKrpq3UO8xCCdzwaJXpxsl6141IwJrinWIaLoQn8zIUQ/exec";
 
-    function unlockSubject() {
-        const selected = document.getElementById('activeSubject').value;
-        // Lock everything first
-        document.querySelectorAll('.subject-input').forEach(div => div.classList.add('locked'));
-        // Unlock only the teacher's subject
-        if(selected) {
-            document.getElementById('row-' + selected).classList.remove('locked');
-        }
-    }
-
-    function getGrade(s) {
-        if(s >= 80) return "D1"; if(s >= 75) return "D2"; if(s >= 65) return "C3";
-        if(s >= 60) return "C4"; if(s >= 55) return "C5"; if(s >= 50) return "C6";
-        if(s >= 45) return "P7"; if(s >= 40) return "P8"; return "F9";
-    }
-
-    function syncData() {
-        const name = document.getElementById('studentName').value;
-        if(!name) return alert("Enter Student Name first!");
-        
-        // This is where we will add the Google Sheets link.
-        // For now, it compiles the local report for viewing.
-        alert("Data compiled! Check 'View Full Report' tab.");
-        generateReport();
-    }
-
-    function generateReport() {
+    async function syncData() {
         const name = document.getElementById('studentName').value;
         const cls = document.getElementById('studentClass').value;
-        const subjects = ["math", "eng", "bio", "phy", "chem"];
-        const labels = ["Mathematics", "English", "Biology", "Physics", "Chemistry"];
-        
-        let rows = "";
-        let total = 0;
+        const sub = document.getElementById('teacherSubject').value;
+        const score = document.getElementById('marks').value;
+        const status = document.getElementById('statusMsg');
 
-        subjects.forEach((s, index) => {
-            let score = Number(document.getElementById('val-' + s).value) || 0;
-            total += score;
-            rows += `<tr><td style="border:1px solid #ddd; padding:8px;">${labels[index]}</td><td style="border:1px solid #ddd; padding:8px;">${score}</td><td style="border:1px solid #ddd; padding:8px;">${getGrade(score)}</td></tr>`;
-        });
+        if(!name || !score) {
+            alert("⚠️ Please enter both Name and Marks!");
+            return;
+        }
 
-        const avg = total / 5;
-        document.getElementById('reportInfo').innerHTML = `<strong>Name:</strong> ${name.toUpperCase()}<br><strong>Class:</strong> ${cls}`;
-        document.getElementById('reportTableBody').innerHTML = rows;
-        document.getElementById('reportSummary').innerHTML = `Average: ${avg.toFixed(1)}% | Result: ${avg >= 50 ? 'PASS' : 'FAIL'}`;
+        status.style.display = "block";
+        status.className = "status loading";
+        status.innerText = "⏳ Saving to Google Sheet...";
+
+        try {
+            await fetch(CLOUD_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({name, class: cls, subject: sub, score})
+            });
+
+            status.className = "status success";
+            status.innerText = "✅ Successfully Saved!";
+            
+            // Reset mark field for next entry
+            document.getElementById('marks').value = "";
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => { status.style.display = "none"; }, 3000);
+
+        } catch (error) {
+            status.style.background = "#f8d7da";
+            status.style.color = "#721c24";
+            status.innerText = "❌ Connection Error!";
+        }
     }
 </script>
 
 </body>
-                                                                                                    </html>
-        
+    </html>
+    
