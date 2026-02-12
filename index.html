@@ -3,82 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wokuti Pro Dashboard</title>
+    <title>Bulanga SS Edu-Hub</title>
     <style>
-        :root { --primary: #007bff; --secondary: #ff9800; --bg: #f4f7f6; --text: #333; }
-        body.dark { --bg: #1a1a2e; --text: #fff; }
+        :root { --primary: #003366; --accent: #e67e22; --bg: #f4f7f6; --text: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); }
         
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text);
-            transition: background 0.5s ease; /* Smooth background transition */
-            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; 
-        }
+        /* Header & School Name */
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
+        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; }
 
-        .card { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(10px); /* Modern frosted glass effect */
-            padding: 2rem; border-radius: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            width: 320px; text-align: center; border: 1px solid rgba(255,255,255,0.2);
-            animation: fadeIn 1s ease-in; 
-        }
+        /* Navigation */
+        .nav { display: flex; overflow-x: auto; background: white; padding: 10px; gap: 10px; sticky: top; }
+        .nav button { white-space: nowrap; padding: 10px 20px; border: none; border-radius: 20px; background: #eee; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .nav button.active { background: var(--accent); color: white; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        /* Container & Cards */
+        .content { padding: 20px; max-width: 600px; margin: auto; }
+        .section { display: none; animation: slideIn 0.4s ease-out; }
+        .section.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        input { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 12px; border: none; font-size: 1.2rem; outline: none; }
-        
-        .btn-group { display: flex; gap: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .to-f { background-color: var(--primary); }
-        .to-c { background-color: var(--secondary); }
-        button:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { border-left: 5px solid var(--accent); padding-left: 10px; font-size: 1.2rem; }
 
-        #result { margin-top: 25px; font-size: 2rem; font-weight: bold; transition: 0.3s; }
-        .animate-res { animation: pop 0.4s ease; }
-        
-        .mode-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; }
+        /* Forms & Inputs */
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .action-btn { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* Library Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .book { background: #f9f9f9; border: 1px solid #eee; padding: 20px 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .book:active { transform: scale(0.95); background: #eee; }
+
+        /* Result Output */
+        #resOutput { margin-top: 20px; text-align: center; font-size: 1.1rem; }
+        .download-btn { background: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px; width: 100%; border: none;}
     </style>
 </head>
 <body>
 
-<div class="mode-toggle" onclick="toggleTheme()">🌓</div>
+<header>
+    <h1>BULANGA SECONDARY SCHOOL</h1>
+    <p>" PROGRESSIVE "</p>
+</header>
 
-<div class="card">
-    <h2>Smart Converter</h2>
-    <input type="number" id="tempInput" placeholder="Enter degree">
-    
-    <div class="btn-group">
-        <button class="to-f" onclick="convert('F')">To °F</button>
-        <button class="to-c" onclick="convert('C')">To °C</button>
+<div class="nav">
+    <button onclick="show('lib')" id="btn-lib" class="active">📚 Library</button>
+    <button onclick="show('ana')" id="btn-ana">📊 Analyzer</button>
+    <button onclick="show('imp')" id="btn-imp">📥 Import Paper</button>
+</div>
+
+<div class="content">
+    <div id="lib" class="section active">
+        <div class="card">
+            <h2>Digital Library</h2>
+            <div class="grid">
+                <div class="book" onclick="alert('Opening Physics...')">📓 Physics</div>
+                <div class="book" onclick="alert('Opening Math...')">📐 Mathematics</div>
+                <div class="book" onclick="alert('Opening Biology...')">🔬 Biology</div>
+                <div class="book" onclick="alert('Opening English...')">📖 English</div>
+            </div>
+        </div>
     </div>
 
-    <div id="result">---</div>
+    <div id="ana" class="section">
+        <div class="card">
+            <h2>Results Analyzer</h2>
+            <input type="number" id="m1" placeholder="Math Score">
+            <input type="number" id="m2" placeholder="English Score">
+            <input type="number" id="m3" placeholder="Science Score">
+            <button class="action-btn" onclick="analyze()">Calculate & Grade</button>
+            <div id="resOutput"></div>
+        </div>
+    </div>
+
+    <div id="imp" class="section">
+        <div class="card">
+            <h2>Past Paper Importer</h2>
+            <input type="text" id="paperTitle" placeholder="Paper Name (e.g. S.4 Math 2025)">
+            <input type="file" id="paperFile" accept="image/*,application/pdf">
+            <button class="action-btn" style="background:#27ae60" onclick="importPaper()">Add to Library</button>
+            <div id="paperList" style="margin-top:15px;"></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    function toggleTheme() { document.body.classList.toggle('dark'); }
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + id).classList.add('active');
+    }
 
-    function convert(unit) {
-        const input = document.getElementById('tempInput').value;
-        const display = document.getElementById('result');
-        
-        if (input === "") return;
+    function analyze() {
+        const scores = [Number(document.getElementById('m1').value), Number(document.getElementById('m2').value), Number(document.getElementById('m3').value)];
+        const avg = (scores[0] + scores[1] + scores[2]) / 3;
+        let grade = avg >= 80 ? "D1 (Distinction)" : avg >= 60 ? "C3 (Credit)" : "F9 (Fail)";
+        let color = avg >= 60 ? "#27ae60" : "#e74c3c";
 
-        display.classList.remove('animate-res'); // Reset animation
-        void display.offsetWidth; // Trigger reflow
-        display.classList.add('animate-res'); // Start animation
+        document.getElementById('resOutput').innerHTML = `
+            <div style="border:2px solid ${color}; padding:15px; border-radius:10px;">
+                <strong>Average: ${avg.toFixed(1)}%</strong><br>
+                Status: <span style="color:${color}">${grade}</span><br>
+                <button class="download-btn" onclick="downloadReport(${avg.toFixed(1)}, '${grade}')">💾 Save Report Card</button>
+            </div>`;
+    }
 
-        let res = (unit === 'F') ? (input * 9/5) + 32 : (input - 32) * 5/9;
-        display.innerText = res.toFixed(1) + (unit === 'F' ? " °F" : " °C");
-        
-        // Logical color change: Red for hot, Blue for cold
-        display.style.color = (res > 30 && unit === 'C') || (res > 86 && unit === 'F') ? "#ff4d4d" : "#4d94ff";
+    function downloadReport(avg, grade) {
+        const text = `BULANGA SS PROGRESSIVE\nSTUDENT REPORT CARD\n--------------------\nAvg: ${avg}%\nGrade: ${grade}\n--------------------\nGenerated Offline`;
+        const blob = new Blob([text], {type: "text/plain"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "Bulanga_Report.txt";
+        a.click();
+    }
+
+    function importPaper() {
+        const title = document.getElementById('paperTitle').value;
+        const file = document.getElementById('paperFile').files[0];
+        if(!title || !file) return alert("Fill all fields");
+
+        const url = URL.createObjectURL(file);
+        const div = document.createElement('div');
+        div.style = "background:#eee; padding:10px; border-radius:5px; margin-bottom:5px; display:flex; justify-content:space-between;";
+        div.innerHTML = `<span>${title}</span> <a href="${url}" target="_blank">View 👁️</a>`;
+        document.getElementById('paperList').appendChild(div);
     }
 </script>
 
 </body>
 </html>
+
 
